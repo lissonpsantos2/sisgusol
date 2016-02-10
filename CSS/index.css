@@ -1,0 +1,25 @@
+.jumbotron-header {
+	
+	background-color: #4ACE3F;
+	color: #FFFFFF;
+	text-align: left;
+	font-family: inherit;
+	
+}
+
+.rodape {
+	
+	margin-top: 30px;
+	margin-bottom: 0px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: 100%;
+	text-align: center;
+	
+}
+
+.graphDiv {
+	margin-left: 2.5%;
+	width:95%;
+	height:600px;
+}

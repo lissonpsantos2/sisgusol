@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="index" ng-controller="indexCtrl">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="content-language" content="pt-br">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="CSS/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="CSS/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="CSS/style.css">
+	<link rel="stylesheet" type="text/css" href="CSS/export.css">
+	<link rel="stylesheet" type="text/css" href="CSS/index.css">
+
+	<title>{{logoNome}}</title>
+
+</head>
+
+<body>
+	<header>
+		<div class="jumbotron jumbotron-header">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-2 col-sm-offset-4 col-xs-3 col-xs-offset-2">
+						<img class="img-responsive" src="IMG/iconLogo.png">
+					</div>
+					<div class="col-sm-3 col-xs-3" style>
+						<h1>{{logoNome}}</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	
+	
+	<div class="graphDiv" id="chartdiv"></div>
+	
+	<footer>
+		<div class="jumbotron rodape">
+			Alisson Pereira dos Santos - GPEBIO - UNIVASF
+		</div>
+	</footer>
+
+	<!-- SEÇÃO - JAVASCRIPT -->	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    
+    <script type="text/javascript" src="JS/bootstrap.min.js"></script>
+    <script type="text/javascript" src="JS/angular.min.js"></script>
+    <script type="text/javascript" src="JS/indexCtrl.js"></script>
+
+    <script type="text/javascript" src="amcharts/amcharts.js"></script>
+	<script type="text/javascript" src="amcharts/serial.js"></script>
+	<script type="text/javascript" src="amcharts/amstock.js"></script>
+	<script type="text/javascript" src="amcharts/plugins/responsive/responsive.min.js"></script>
+	<script type="text/javascript" src="amcharts/plugins/export/export.min.js"></script>
+
+</body>
+</html>
