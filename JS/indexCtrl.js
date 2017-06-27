@@ -1,4 +1,4 @@
-var app = angular.module('index', []);
+﻿var app = angular.module('index', []);
 app.controller('indexCtrl', function($scope, $http) {
 
 	$scope.logoNome = "SisguSol";
@@ -10,9 +10,8 @@ app.controller('indexCtrl', function($scope, $http) {
 	var sensor2 = [];
 	var sensor3 = [];
 	var sensor4 = [];
-	var sensor5 = [];	
 
-	$http.get("http://localhost/SisguSol2/PHP/server.php")
+	$http.get("http://localhost/sisgusol/PHP/server.php")
 		.then(
 			//SUCCESS
 			function(data) {
@@ -24,58 +23,45 @@ app.controller('indexCtrl', function($scope, $http) {
 			},
 			//FAIL
 			function(error) {
-				console.log("Não foi possível carregar o BD: "+erro);
+				console.log("NÃ£o foi possível carregar o BD: "+error);
 			}
 		);	
 	
 	function carregadados() {
 
-		
-		for (i=0; i<dadosBD.length; i++) {
 
-			temp = parseInt(dadosBD[i].EndFisico);
-			s30 = parseInt(dadosBD[i].Sensor30);
-			s60 = parseInt(dadosBD[i].Sensor60);
-			
+		for (i = 0; i<dadosBD.length; i++) {
 
-			switch(temp) {
-				case 1:
-					sensor1.push({
-						date: new Date(dadosBD[i].DataHora),
-						sensor30: s30,
-						sensor60: s60,
-					});
-					break;
-				case 2:
-					sensor2.push({
-						date: new Date(dadosBD[i].DataHora),
-						sensor30: s30,
-						sensor60: s60,
-					});
-					break;
-				case 3:
-					sensor3.push({
-						date: new Date(dadosBD[i].DataHora),
-						sensor30: s30,
-						sensor60: s60,
-					});
-					break;
-				case 4:
-					sensor4.push({
-						date: new Date(dadosBD[i].DataHora),
-						sensor30: s30,
-						sensor60: s60,
-					});
-					break;
-				case 5:
-					sensor5.push({
-						date: new Date(dadosBD[i].DataHora),
-						sensor30: s30,
-						sensor60: s60,
-					});
+			var temp30 = parseFloat((((parseFloat(dadosBD[i].M_SENSOR30)/5.0)-0.04)/0.009).toFixed(2));
+			var temp60 = parseFloat((((parseFloat(dadosBD[i].M_SENSOR60)/5.0)-0.04)/0.009).toFixed(2));
 
-					break;
-
+			if (dadosBD[i].NODE_ID==" SENSOR1") {
+				sensor1.push({
+					date: new Date(dadosBD[i].DATE_TIME),
+					sensor30: temp30,
+					sensor60: temp60,
+				});
+			}
+			if (dadosBD[i].NODE_ID==" SENSOR2") {
+				sensor2.push({
+					date: new Date(dadosBD[i].DATE_TIME),
+					sensor30: temp30,
+					sensor60: temp60,
+				});
+			}
+			if (dadosBD[i].NODE_ID==" SENSOR3") {
+				sensor3.push({
+					date: new Date(dadosBD[i].DATE_TIME),
+					sensor30: temp30,
+					sensor60: temp60,
+				});
+			}
+			if (dadosBD[i].NODE_ID==" SENSOR4") {
+				sensor4.push({
+					date: new Date(dadosBD[i].DATE_TIME),
+					sensor30: temp30,
+					sensor60: temp60,
+				});
 			}
 		}
 	}
@@ -83,12 +69,12 @@ app.controller('indexCtrl', function($scope, $http) {
 
 	function createStockChart() {
 
-		chart.categoryAxesSettings = {maxSeries:0,minPeriod:"mm"};
+		var categoryAxesSettings = new AmCharts.CategoryAxesSettings();
+		categoryAxesSettings.minPeriod = "ss";
+		chart.periodValue = "Average";
+		chart.categoryAxesSettings = categoryAxesSettings;
 		chart.responsive = {"enabled": true};
-		chart.export = {"enabled": true
-
-
-		};
+		chart.export = {"enabled": true};
 
 
 		// DATASETS //////////////////////////////////////////
@@ -142,39 +128,26 @@ app.controller('indexCtrl', function($scope, $http) {
 		dataSet4.dataProvider = sensor4;
 		dataSet4.categoryField = "date";
 
-		var dataSet5 = new AmCharts.DataSet();
-		dataSet5.title = "Sensor 5";
-		dataSet5.fieldMappings = [{
-			fromField: "sensor30",
-			toField: "sensor30"
-		}, {
-			fromField: "sensor60",
-			toField: "sensor60"
-		}];
-		dataSet5.dataProvider = sensor5;
-		dataSet5.categoryField = "date";
-
 		// set data sets to the chart
-		chart.dataSets = [dataSet1, dataSet2, dataSet3, dataSet4, dataSet5];
+		chart.dataSets = [dataSet1, dataSet2, dataSet3, dataSet4];
 
 		// PANELS ///////////////////////////////////////////
 
 		// first stock panel
 		var stockPanel1 = new AmCharts.StockPanel();
-		stockPanel1.showCategoryAxis = false;
 		stockPanel1.title = "Sensor a 30cm";
-		stockPanel1.percentHeight = 50;
+		stockPanel1.percentHeight = 100;
 
 		// graph of first stock panel
 		var graph1 = new AmCharts.StockGraph();
-		graph1.valueField = "sensor30";
+		graph1.valueField = "sensor60";
 		graph1.comparable = true;
-		graph1.compareField = "sensor30";
+		graph1.compareField = "sensor60";
 		graph1.bullet = "round";
 		graph1.bulletBorderColor = "#FFFFFF";
 		graph1.bulletBorderAlpha = 1;
-		graph1.balloonText = "[[title]]:<b>[[sensor30]]</b>";
-		graph1.compareGraphBalloonText = "[[title]]:<b>[[sensor30]]</b>";
+		graph1.balloonText = "[[title]]: <b>[[value]] KPa</b>";
+		graph1.compareGraphBalloonText = "[[title]]:<b>[[value]]</b>";
 		graph1.compareGraphBullet = "round";
 		graph1.compareGraphBulletBorderColor = "#FFFFFF";
 		graph1.compareGraphBulletBorderAlpha = 1;
@@ -186,36 +159,13 @@ app.controller('indexCtrl', function($scope, $http) {
 		stockLegend1.periodValueTextRegular = "[[sensor30.close]]";
 		stockPanel1.stockLegend = stockLegend1;
 
-		// second stock panel
-		var stockPanel2 = new AmCharts.StockPanel();
-		stockPanel2.title = "Sensor a 60cm";
-		stockPanel2.percentHeight = 50;
-
-		// graph of second stock panel
-		var graph2 = new AmCharts.StockGraph();
-		graph2.valueField = "sensor60";
-		graph2.comparable = true;
-		graph2.compareField = "sensor60";
-		graph2.bullet = "round";
-		graph2.bulletBorderColor = "#FFFFFF";
-		graph2.bulletBorderAlpha = 1;
-		graph2.balloonText = "[[title]]:<b>[[sensor60]]</b>";
-		graph2.compareGraphBalloonText = "[[title]]:<b>[[sensor60]]</b>";
-		graph2.compareGraphBullet = "round";
-		graph2.compareGraphBulletBorderColor = "#FFFFFF";
-		graph2.compareGraphBulletBorderAlpha = 1;
-		stockPanel2.addStockGraph(graph2);
-
-		var stockLegend2 = new AmCharts.StockLegend();
-		stockLegend2.periodValueTextRegular = "[[sensor60.close]]";
-		stockPanel2.stockLegend = stockLegend2;
-
 		// set panels to the chart
-		chart.panels = [stockPanel1, stockPanel2];
+		chart.panels = [stockPanel1];
 
 		// OTHER SETTINGS ////////////////////////////////////
 		var sbsettings = new AmCharts.ChartScrollbarSettings();
 		sbsettings.graph = graph1;
+		sbsettings.usePeriod = "10mm"; // this will improve performance
 		chart.chartScrollbarSettings = sbsettings;
 
 		// CURSOR
@@ -227,10 +177,24 @@ app.controller('indexCtrl', function($scope, $http) {
 		// PERIOD SELECTOR ///////////////////////////////////
 		var periodSelector = new AmCharts.PeriodSelector();
 		periodSelector.position = "left";
-		periodSelector.fromText = "A partir de:";
-		periodSelector.toText = "Ate: ";
-
+		periodSelector.dateFormat = "YYYY-MM-DD JJ:NN";
 		periodSelector.periods = [{
+			period: "hh",
+			count: 1,
+			label: "1 hour"
+		}, {
+			period: "hh",
+			count: 2,
+			label: "2 hours"
+		}, {
+			period: "hh",
+			count: 5,
+			label: "5 hour"
+		}, {
+			period: "hh",
+			count: 12,
+			label: "12 hours"
+		},{
 			period: "DD",
 			count: 1,
 			label: "1 dia"
@@ -249,6 +213,10 @@ app.controller('indexCtrl', function($scope, $http) {
 		}];
 		chart.periodSelector = periodSelector;
 
+		var panelsSettings = new AmCharts.PanelsSettings();
+		panelsSettings.mouseWheelZoomEnabled = true;
+		panelsSettings.usePrefixes = true;
+		chart.panelsSettings = panelsSettings;
 
 		// DATA SET SELECTOR
 		var dataSetSelector = new AmCharts.DataSetSelector();
